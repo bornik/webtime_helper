@@ -1,0 +1,33 @@
+{
+  "name": "Webtime helper",
+  "version": "1.0",
+  "description": "Helps to fill webtime with Jira logs",
+  "background": { "scripts": ["background.js"] },
+  "page_action" :
+  {
+    "default_icon" : "jira_19.png",
+    "default_title" : "Fill webtime easily",
+    "default_popup": "popup.html"
+  },
+  "permissions" : [
+        "tabs",
+      "https://webtime.exadel.com/",
+      "https://jira.exadel.com/",
+      "http://jira.exadel.com/"
+  ],
+
+    "content_scripts" : [
+        {
+            "matches" : [ "https://webtime.exadel.com/*" ],
+            "js" : [ "jquery-2.0.3.js", "contentscript.js" ],
+            "run_at" : "document_start",
+            "all_frames" : false
+        }
+    ],
+  "icons" : {
+//    "19" : "jira_19.png",
+//    "48" : "icon-48.png",
+//    "128" : "icon-128.png"
+  },
+  "manifest_version": 2
+}
