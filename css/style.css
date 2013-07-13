@@ -1,3 +1,12 @@
 .middle-cell {
     vertical-align: middle !important;
+    text-align: center !important;
+}
+
+th {
+    text-align: center !important;
+}
+
+body {
+    font-size: 10px !important;
 }

@@ -65,14 +65,7 @@ var tableCaptions = ['DoW', 'Issue', 'Time log', 'Select'];
  * Builds a table model with Issues from JIRA
  * @param aData - JSON from JIRA
  */
-function processTableModel(aData) {
-
-    // DELETE before production
-    aData = JSON.stringify(aData);
-    // DELETE ;
-
-
-    var data = JSON.parse(aData);
+function processTableModel(data) {
 
     weekHeader.startDate = new Date(+data.startDate);
     weekHeader.endDate = new Date(+data.endDate);
@@ -82,7 +75,7 @@ function processTableModel(aData) {
     var tmpItems = [];
 
     for (var key in data.worklog) {
-        var item = {};
+
 
         var issueKey = data.worklog[key].key,
             issueName = data.worklog[key].summary;
@@ -92,6 +85,7 @@ function processTableModel(aData) {
                 timeSpent = data.worklog[key].entries[innerKey].timeSpent / 3600, // time in hours
                 comment = data.worklog[key].entries[innerKey].comment;
 
+            var item = {};
             item.key = logDate.getDay();
             item.issueKey = issueKey;
             item.issueName = issueName;
@@ -125,7 +119,7 @@ function drawAndFillTable(tm, tc) {
 
     var timeSpentSummary = 0;
 
-    var table = $('<table/>').addClass('table').attr('id', 'jiraLog');
+    var table = $('<table/>').addClass('table table-hover table-condensed').attr('id', 'jiraLog');
 
     var tableCaption = $('<caption/>').append(weekHeader.getCaption());
 
@@ -163,11 +157,21 @@ function drawAndFillTable(tm, tc) {
 
     table.append(tableBody);
 
-    var tableFooter = $('<tfoot/>').append('<td></td><td></td><td class="summary">' + timeSpentSummary + ' h</td><td><button id="send">Send</button></td>');
+    var tableFooter = $('<tfoot/>').append('<td><a href="http://jira.exadel.com" class="btn btn-primary btn-small">JIRA Exadel</a> </td><td></td><td class="summary">' + timeSpentSummary + ' h</td><td><button id="fillWebtime" class="btn btn-success btn-small">Fill table</button></td>');
     table.append(tableFooter);
 
 
     $('#tableContent').append(table);
+
+    $('#fillWebtime').click(function (e) {
+        var dataModel = prepareModelToSend(tableModel);
+
+        chrome.tabs.getSelected(null, function (tab) {
+            chrome.tabs.sendMessage(tab.id, {channel: 'fillWebtimeButtonClicked', dataModel: dataModel}, function (response) {
+                console.log(response.farewell);
+            });
+        });
+    });
 }
 
 
