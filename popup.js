@@ -8,6 +8,14 @@ var mainObj = {
         $('body').click('#fillWebtime', function (e) {
             console.log("#fillWebtime clicked");
 
+            var dataModel = prepareModelToSend(tableModel);
+
+            chrome.tabs.getSelected(null, function (tab) {
+                chrome.tabs.sendMessage(tab.id, {channel: 'fillWebtimeButtonClicked', dataModel: dataModel}, function (response) {
+                    console.log(response.farewell);
+                });
+            });
+
 //            //var dataModel = [
 //                {
 //                    issueKey: 'THTML-45',
@@ -16,27 +24,7 @@ var mainObj = {
 //                }
 //            ];
 
-            $.ajax({
-                type: 'GET',
-                url: 'https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json',
-                success: function (response) {
-                    var dataModel = {"2": [
-                        {"issueKey": "PRBSTBDFPS-45", "issueName": "PART2 : Partner Detail form for view mode", "timeSpent": 8}
-                    ], "4": [
-                        {"issueKey": "PRBSTBDFPS-20", "issueName": "PART2 : Implement partner invitation table", "timeSpent": 8}
-                    ], "5": [
-                        {"issueKey": "PRBSTBDFPS-59", "issueName": "PART2: Check logic for working with empty objects (fields = null)", "timeSpent": 8}
-                    ]};
-                    chrome.tabs.getSelected(null, function (tab) {
-                        chrome.tabs.sendMessage(tab.id, {channel: 'fillWebtimeButtonClicked', dataModel: dataModel}, function (response) {
-                            console.log(response.farewell);
-                        });
-                    });
-                },
-                error: function (error) {
-                    console.log('error',error);
-                }
-            });
+
 
 //            this.doInCurrentTab(function () {
 ////                console.log("filldoINCurTab scope");
@@ -57,12 +45,25 @@ var mainObj = {
         )
     },
     actionButtonClicked: function () {
-        chrome.tabs.getSelected(null, function (tab) {
-            console.log(tab);
+
+        $.ajax({
+            type: 'GET',
+            url: 'https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json',
+            success: function (response) {
+                processTableModel(response);
+                drawAndFillTable(tableModel, tableCaptions);
+            },
+            error: function (error) {
+                console.log('error',error);
+            }
+        });
+//
+//        chrome.tabs.getSelected(null, function (tab) {
+//            console.log(tab);
 //            chrome.tabs.sendMessage(tab.id, {channel: 'pageActionOnClicked'}, function (response) {
 //                console.log(response.farewell);
 //            });
-        });
+//        });
     }
 
 };

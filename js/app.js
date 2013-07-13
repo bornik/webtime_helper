@@ -7,8 +7,6 @@
  */
 
 var tableModel = {};
-var modelToSend = {};
-
 
 var weekHeader = {
     startDate: '',
@@ -26,12 +24,12 @@ var weekHeader = {
     init: function() {
         this.startDayOfWeek = this.startDate.getDay();
         this.startDay = this.startDate.getDate();
-        this.startMonth = this.startDate.getMonth() + 1;
+        this.startMonth = this.startDate.getMonth();
         this.startYear = this.startDate.getFullYear();
 
         this.endDayOfWeek = this.endDate.getDay();
         this.endDay = this.endDate.getDate();
-        this.endMonth = this.endDate.getMonth() + 1;
+        this.endMonth = this.endDate.getMonth();
         this.endYear = this.endDate.getFullYear();
     },
 
@@ -90,7 +88,7 @@ function processTableModel(aData) {
             issueName = data.worklog[key].summary;
 
         for (var innerKey in data.worklog[key].entries) {
-            var logDate = new Date(+data.worklog[key].entries[innerKey].updated),
+            var logDate = new Date(+data.worklog[key].entries[innerKey].startDate),
                 timeSpent = data.worklog[key].entries[innerKey].timeSpent / 3600, // time in hours
                 comment = data.worklog[key].entries[innerKey].comment;
 
@@ -175,12 +173,13 @@ function drawAndFillTable(tm, tc) {
 
 
 function prepareModelToSend(tm) {
-    modelToSend = {};
+    var modelToSend = {};
     var checkedDays = $("input[name='sel']:checked");
 
     $.each(checkedDays, function() {
         modelToSend[$(this).val()] =  tm[$(this).val()];
     });
+    return modelToSend;
 }
 
 function getShortNameOfDay(dayIndex) {
