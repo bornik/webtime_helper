@@ -45,6 +45,48 @@ var mainObj = {
 
 };
 
+/**
+ * Encode auth info to base64
+ *
+ * @user The user login.
+ * @password The user password.
+ * @return Base64 auth string.
+ */
+function getAuthBase64(user, password) {
+	var tok = user + ':' + password;
+	var hash = btoa(tok);
+	return "Basic " + hash;
+} 
+
+/**
+ * Provide jira weekly timesheet.
+ *
+ * @user The user login.
+ * @password The user password.
+ * @return Weekly timesheet at JSON format.
+ */
+function getTimeSheet(user, password) {
+	var url = "https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json";
+	var client = new XMLHttpRequest();
+	
+	client.open("GET", url, false);
+	client.setRequestHeader("Content-Type", "application/json");	
+	client.setRequestHeader("Authorization", "Basic " + getAuthBase64(user, password));		
+	try {
+		client.send("");
+		if (client.status == 200){
+			console.log(client.responseText);
+			return client.responseText;
+		} else{
+			console.log("Error code: " + client.status);
+		}
+	} catch(e) {
+		console.log(e);
+	}
+	return null;
+}
+
+
 // Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
     mainObj.addDomHandlers();
