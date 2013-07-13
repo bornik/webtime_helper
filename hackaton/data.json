@@ -1,0 +1,68 @@
+{
+    "worklog": [
+        {
+            "key": "PRBSTBDFPS-59",
+            "summary": "PART2: Check logic for working with empty objects (fields = null)",
+            "entries": [
+                {
+                    "comment": "Checked",
+                    "timeSpent": 28800,
+                    "author": "aartemenko",
+                    "authorFullName": "Andrii Artemenko",
+                    "created": 1373639794000,
+                    "startDate": 1373639760000,
+                    "updateAuthor": "aartemenko",
+                    "updateAuthorFullName": "Andrii Artemenko",
+                    "updated": 1373639794000
+                }
+            ]
+        },
+        {
+            "key": "PRBSTBDFPS-45",
+            "summary": "PART2 : Partner Detail form for view mode",
+            "entries": [
+                {
+                    "comment": "Add invitation another company",
+                    "timeSpent": 28800,
+                    "author": "aartemenko",
+                    "authorFullName": "Andrii Artemenko",
+                    "created": 1373385339000,
+                    "startDate": 1373385300000,
+                    "updateAuthor": "aartemenko",
+                    "updateAuthorFullName": "Andrii Artemenko",
+                    "updated": 1373385339000
+                }
+            ]
+        },
+        {
+            "key": "PRBSTBDFPS-20",
+            "summary": "PART2 : Implement partner invitation table",
+            "entries": [
+                {
+                    "comment": "Transform Status_Description column from status_id",
+                    "timeSpent": 28800,
+                    "author": "aartemenko",
+                    "authorFullName": "Andrii Artemenko",
+                    "created": 1373296416000,
+                    "startDate": 1373296380000,
+                    "updateAuthor": "aartemenko",
+                    "updateAuthorFullName": "Andrii Artemenko",
+                    "updated": 1373296416000
+                },
+                {
+                    "comment": "Add status evalutor using",
+                    "timeSpent": 28800,
+                    "author": "aartemenko",
+                    "authorFullName": "Andrii Artemenko",
+                    "created": 1373556167000,
+                    "startDate": 1373469720000,
+                    "updateAuthor": "aartemenko",
+                    "updateAuthorFullName": "Andrii Artemenko",
+                    "updated": 1373556167000
+                }
+            ]
+        }
+    ],
+    "startDate": 1373144400000,
+    "endDate": 1373749200000
+}
