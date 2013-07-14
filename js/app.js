@@ -170,21 +170,21 @@ function drawAndFillTable(tm, tc) {
 
     table.append(tableBody);
 
-    var tableFooter = $('<tfoot/>').append('<td><button id="fillWebtime" class="btn btn-success btn-small">Fill table</button></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td></td>');
+    var tableFooter = $('<tfoot/>').append('<td></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td></td>');
     table.append(tableFooter);
 
 
     $('#tableContent').append(table);
 
-    $('#fillWebtime').click(function (e) {
-        var dataModel = prepareModelToSend(tableModel);
-
-        chrome.tabs.getSelected(null, function (tab) {
-            chrome.tabs.sendMessage(tab.id, {channel: 'fillWebtimeButtonClicked', dataModel: dataModel}, function (response) {
-                console.log(response.farewell);
-            });
-        });
-    });
+//    $('#fillWebtime').click(function (e) {
+//        var dataModel = prepareModelToSend(tableModel);
+//
+//        chrome.tabs.getSelected(null, function (tab) {
+//            chrome.tabs.sendMessage(tab.id, {channel: 'fillWebtimeButtonClicked', dataModel: dataModel}, function (response) {
+//                console.log(response.farewell);
+//            });
+//        });
+//    });
 }
 
 

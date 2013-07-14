@@ -31,7 +31,13 @@ var mainObj = {
             var dataModel = prepareModelToSend(tableModel);
 
             chrome.tabs.getSelected(null, function (tab) {
-                chrome.tabs.sendMessage(tab.id, {channel: 'fillWebtimeButtonClicked', dataModel: dataModel}, function (response) {
+                chrome.tabs.sendMessage(tab.id, {
+                    channel: 'fillWebtimeButtonClicked',
+                    data: {
+                        week: dataModel,
+                        projectId: localStorage['currentProject']
+                    }
+                }, function (response) {
                     console.log(response.farewell);
                 });
             });
@@ -75,7 +81,7 @@ var mainObj = {
         chrome.tabs.getSelected(null, function (tab) {
             console.log("getSelected fired");
             chrome.tabs.sendMessage(tab.id, {channel: 'getProjects'}, function (response) {
-                console.log("getProjects response fired");
+                console.log("getProjects response fired", response);
                 if (response.status === 'success'){
                     var $projectsList = $('#projectsList');
                     $.each(response.data, function(index, project){

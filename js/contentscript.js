@@ -17,11 +17,13 @@
 var tableFiller = {
     idsMask: {
         hours: 'Hours-',
-        description: 'notes-'
+        description: 'notes-',
+        project: 'PID-'
     },
 
-    process: function (dataModel){
-        $.each(dataModel, function(dayIndex, day){
+    process: function (data){
+        console.log(data)
+        $.each(data.week, function(dayIndex, day){
             var hoursSummary = 0,
                 descriptionSummary = '';
             $.each(day, function(taskIndex, task){
@@ -31,6 +33,7 @@ var tableFiller = {
 
             this.setHours(dayIndex, hoursSummary);
             this.setDescription(dayIndex, descriptionSummary);
+            data.projectId ? this.setProject(dayIndex, data.projectId) : null;
         }.bind(this));
     },
 
@@ -40,17 +43,21 @@ var tableFiller = {
 
     setDescription: function (index, text){
         $('#' + this.idsMask.description + index).val(text);
+    },
+
+    setProject: function (index, id){
+        var $temp = $('#' + this.idsMask.project + index).val(id);
+        $('#' + this.idsMask.project + index).trigger('change');
+//        $temp
     }
 };
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch (request.channel) {
         case 'fillWebtimeButtonClicked':
-            console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-            if ($.isPlainObject(request.dataModel)) {
-                tableFiller.process(request.dataModel)
+            console.log("fillWebtimeButtonClicked", request);
+            if ($.isPlainObject(request.data)) {
+                tableFiller.process(request.data)
                 sendResponse({status: 'success'});
             }
             break;
