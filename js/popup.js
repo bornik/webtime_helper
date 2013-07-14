@@ -185,6 +185,11 @@ function isAuthorized() {
 	return result;
 }
 
+function goToIssue(issue){
+	var link = jiraUrl + "/browse/" + issue;
+	chrome.tabs.create({ url: link });
+}
+
 //document.addEventListener('DOMContentLoaded', function () {
 //    mainObj.addDomHandlers();
 //    mainObj.actionButtonClicked();
