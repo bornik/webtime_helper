@@ -63,13 +63,11 @@ var mainObj = {
             $('#credentials').hide();
             $('#content').show();
         });
-    },
 
         $('#projectsList').change(function (e) {
             console.log("#projectsList changed");
-            localStorage['currentProject'] = e.target.value
+            localStorage['currentProject'] = e.target.value;
         });
-
     },
 
     setProjectsOptions: function() {
