@@ -60,7 +60,7 @@ var mainObj = {
             }
         });
 		*/
-		
+		minusWeek();
 		var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
 		if (response){
 			processTableModel(response);
@@ -93,6 +93,7 @@ function getAuthBase64(user, password) {
  * @return Weekly timesheet at JSON format.
  */
 function getTimeSheet(user, password, startDate, endDate) {
+	$("#loading").show();
 	var url = "https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json";
 	if (startDate != null && endDate != null) {
     	var startParam = moment(startDate).format('DD/MMM/YYYY');
@@ -113,6 +114,7 @@ function getTimeSheet(user, password, startDate, endDate) {
 		client.send("");
 		if (client.status == 200){
 			console.log(client.responseText);
+			$("#loading").hide();
 			return client.responseText;
 		} else{
 			console.log("Error code: " + client.status);
@@ -120,17 +122,9 @@ function getTimeSheet(user, password, startDate, endDate) {
 	} catch(e) {
 		console.log(e);
 	}
+	$("#loading").hide();
 	return null;
 }
-
-
-$(document).ajaxStart(function() {
-    $("#loading").show();
-});
-
-$(document).ajaxStop(function() {
-    $("#loading").hide();
-});
 
 // Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
