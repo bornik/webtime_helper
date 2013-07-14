@@ -92,9 +92,11 @@ var mainObj = {
                         var o = new Option(project.text, project.value);
                         $(o).html(project.text);
                         $projectsList.append(o);
-                    })
+                    });
                     if (localStorage['currentProject']) {
                         $projectsList.val(localStorage['currentProject'])
+                    } else {
+                        $projectsList.val(-1);
                     }
                 }
             });

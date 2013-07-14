@@ -47,7 +47,7 @@ var tableFiller = {
 
     setProject: function (index, id){
         var $temp = $('#' + this.idsMask.project + index).val(id);
-        $('#' + this.idsMask.project + index).trigger('change');
+        $('#' + this.idsMask.project + index).change();
 //        $temp
     }
 };
