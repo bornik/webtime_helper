@@ -67,6 +67,8 @@ var tableCaptions = ['DoW', 'Issue', 'Time log', 'Select'];
  */
 function processTableModel(data) {
 
+	data = JSON.parse(data);
+
     weekHeader.startDate = new Date(+data.startDate);
     weekHeader.endDate = new Date(+data.endDate);
 

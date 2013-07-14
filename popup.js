@@ -29,8 +29,8 @@ var mainObj = {
     },
 
     actionButtonClicked: function () {
-
-        $.ajax({
+        /*
+		$.ajax({
             type: 'GET',
             url: 'https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json',
             success: function (response) {
@@ -41,6 +41,12 @@ var mainObj = {
                 console.log('error',error);
             }
         });
+		*/
+		var response = getTimeSheet("aartemenko", "kl4$Da", new Date("06.08.2013"), new Date("06.15.2013"));
+		if (response){
+			processTableModel(response);
+			drawAndFillTable(tableModel, tableCaptions);
+		}
     }
 
 };
@@ -63,10 +69,22 @@ function getAuthBase64(user, password) {
  *
  * @user The user login.
  * @password The user password.
+ * @startDate Begin report period.
+ * @endDate End report period.
  * @return Weekly timesheet at JSON format.
  */
-function getTimeSheet(user, password) {
+function getTimeSheet(user, password, startDate, endDate) {
 	var url = "https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json";
+	if (startDate != null && endDate != null) {
+    	var startParam = moment(startDate).format('DD/MMM/YYYY');
+		var endParam = moment(endDate).format('DD/MMM/YYYY'); 
+		var completion = "?startDate="+startParam+"&endDate="+endParam;
+		if (completion != null) {
+			url = url + completion;
+		}
+	}
+	console.log(url);
+	
 	var client = new XMLHttpRequest();
 	
 	client.open("GET", url, false);
