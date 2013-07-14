@@ -44,22 +44,28 @@ var tableFiller = {
 };
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.channel === 'fillWebtimeButtonClicked') {
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
-        if ($.isPlainObject(request.dataModel)) {
-            tableFiller.process(request.dataModel)
-            sendResponse({status: 'success'});
-        }
-    }
-});
+    switch (request.channel) {
+        case 'fillWebtimeButtonClicked':
+            console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+            if ($.isPlainObject(request.dataModel)) {
+                tableFiller.process(request.dataModel)
+                sendResponse({status: 'success'});
+            }
+            break;
+        case 'pageActionOnClicked':
+            if (!window.jQuery) {
+                chrome.tabs.executeScript(tab.id, {file: "jquery-2.0.3.js"});
+            }
+            break;
+        case 'getProjects':
+            var projectsData = [];
+            $('#PID-8').find('option').each(function(index, option){
+                projectsData.push({value: $(option).val(), text: $(option).text()})
+            });
+            sendResponse({status: 'success', data: projectsData});
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.channel === 'pageActionOnClicked') {
-        if (!window.jQuery) {
-            chrome.tabs.executeScript(tab.id, {file: "jquery-2.0.3.js"});
-        }
     }
 });
 

@@ -1,6 +1,3 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
 var beginPeriod = moment().startOf('week');
 var endPeriod = moment().endOf('week'); 
@@ -51,16 +48,33 @@ var mainObj = {
             plusWeek();
             self.requestAndShow();
         });
+
+        $('#projectsList').change(function (e) {
+            console.log("#projectsList changed");
+            localStorage['currentProject'] = e.target.value
+        });
+
     },
 
-
-    doInCurrentTab: function (tabCallback) {
-        chrome.tabs.query(
-            { currentWindow: true, active: true },
-            function (tabArray) {
-                tabCallback(tabArray[0]);
-            }
-        )
+    setProjectsOptions: function() {
+        console.log("setProjectsOptions fired");
+        chrome.tabs.getSelected(null, function (tab) {
+            console.log("getSelected fired");
+            chrome.tabs.sendMessage(tab.id, {channel: 'getProjects'}, function (response) {
+                console.log("getProjects response fired");
+                if (response.status === 'success'){
+                    var $projectsList = $('#projectsList');
+                    $.each(response.data, function(index, project){
+                        var o = new Option(project.text, project.value);
+                        $(o).html(project.text);
+                        $projectsList.append(o);
+                    })
+                    if (localStorage['currentProject']) {
+                        $projectsList.val(localStorage['currentProject'])
+                    }
+                }
+            });
+        });
     },
 
     requestAndShow: function() {
@@ -171,8 +185,12 @@ function isAuthorized() {
 	return result;
 }
 
-// Run our kitten generation script as soon as the document's DOM is ready.
-document.addEventListener('DOMContentLoaded', function () {
+//document.addEventListener('DOMContentLoaded', function () {
+//    mainObj.addDomHandlers();
+//    mainObj.actionButtonClicked();
+//});
+$(document).ready(function () {
     mainObj.addDomHandlers();
     mainObj.actionButtonClicked();
+    mainObj.setProjectsOptions();
 });
