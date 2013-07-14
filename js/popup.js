@@ -24,6 +24,7 @@ function currentWeek() {
 var mainObj = {
 
     addDomHandlers: function () {
+        var self = this;
         $('#fillWebtime').click(function (e) {
             console.log("#fillWebtime clicked");
 
@@ -34,7 +35,22 @@ var mainObj = {
                     console.log(response.farewell);
                 });
             });
-        }.bind(this));
+        });
+
+        $('#prevWeek').click(function (e) {
+           minusWeek();
+            self.requestAndShow();
+        });
+
+        $('#currentWeek').click(function(e) {
+            currentWeek();
+            self.requestAndShow();
+        });
+
+        $('#nextWeek').click(function (e) {
+            plusWeek();
+            self.requestAndShow();
+        });
     },
 
 
@@ -45,6 +61,14 @@ var mainObj = {
                 tabCallback(tabArray[0]);
             }
         )
+    },
+
+    requestAndShow: function() {
+        var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
+        if (response){
+            processTableModel(response);
+            drawAndFillTable(tableModel, tableCaptions);
+        }
     },
 
     actionButtonClicked: function () {
@@ -62,8 +86,7 @@ var mainObj = {
         });
         */
         minusWeek();
-		isAuthorized();
-        var response = getTimeSheet("aartemenko", "kl43$Da", beginPeriod, endPeriod);
+        var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
         if (response){
             processTableModel(response);
             drawAndFillTable(tableModel, tableCaptions);

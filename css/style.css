@@ -7,6 +7,10 @@
     font-weight: bold;
 }
 
+.margin10 {
+    margin: 10px;
+}
+
 th {
     text-align: center !important;
 }

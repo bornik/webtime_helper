@@ -69,6 +69,8 @@ function processTableModel(data) {
 
     data = JSON.parse(data);
 
+    tableModel = {};
+
     weekHeader.startDate = new Date(+data.startDate);
     weekHeader.endDate = new Date(+data.endDate);
 
@@ -125,6 +127,10 @@ function processTableModel(data) {
 function drawAndFillTable(tm, tc) {
 
     var timeSpentSummary = 0;
+
+    if (document.getElementById('jiraLog')) {
+        $('#tableContent').empty();
+    }
 
     var table = $('<table/>').addClass('table no-margin-bottom table-hover table-condensed').attr('id', 'jiraLog');
 

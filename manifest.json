@@ -19,7 +19,7 @@
     "content_scripts" : [
         {
             "matches" : [ "https://webtime.exadel.com/*" ],
-            "js" : ["moment.js", "jquery-2.0.3.js", "contentscript.js" ],
+            "js" : ["js/moment.js", "js/jquery-2.0.3.js", "js/contentscript.js" ],
             "run_at" : "document_start",
             "all_frames" : false
         }
