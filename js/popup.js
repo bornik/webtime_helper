@@ -57,6 +57,10 @@ var mainObj = {
             plusWeek();
             self.requestAndShow();
         });
+		
+		$('#jiraLink').click(function (e) {
+            goToJira();
+        });
 
         $('#signIn').click(function (e) {
             self.login = $('#login').val();
@@ -196,7 +200,12 @@ function isAuthorized() {
 
 function goToIssue(issue){
 	var link = jiraUrl + "/browse/" + issue;
+	console.log(link);
 	chrome.tabs.create({ url: link });
+}
+
+function goToJira(){
+	chrome.tabs.create({ url: jiraUrl });
 }
 
 //document.addEventListener('DOMContentLoaded', function () {
