@@ -51,6 +51,10 @@ var mainObj = {
             plusWeek();
             self.requestAndShow();
         });
+		
+		$('#jiraLink').click(function (e) {
+            goToJira();
+        });
 
         $('#signIn').click(function (e) {
             self.login = $('#login').val();
