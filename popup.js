@@ -11,8 +11,8 @@ function plusWeek() {
 } 
 
 function minusWeek() {
-	beginPeriod = beginPeriod.add('days', 7);
-	endPeriod = endPeriod.add('days', 7);
+	beginPeriod = beginPeriod.add('days', -7);
+	endPeriod = endPeriod.add('days', -7);
 } 
 
 function currentWeek() {
