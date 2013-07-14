@@ -46,11 +46,31 @@ var tableFiller = {
     },
 
     setProject: function (index, id){
+//        checkPID(index,id);
         var $temp = $('#' + this.idsMask.project + index).val(id);
+        $.get(chrome.extension.getURL('setProject.js'),
+            function(data) {
+                var script = document.createElement("script");
+                script.setAttribute("type", "text/javascript");
+                script.innerHTML = data;
+                document.getElementsByTagName("head")[0].appendChild(script);
+                document.getElementsByTagName("body")[0].setAttribute("onLoad", "injected_main();");
+            }
+        );
+//        addJavascript(chrome.extension.getURL("/setProject.js"),'body');
 //        $('#' + this.idsMask.project + index).change();
 //        $temp
     }
 };
+
+
+function addJavascript(jsname,pos) {
+    var th = document.getElementsByTagName(pos)[0];
+    var s = document.createElement('script');
+    s.setAttribute('type','text/javascript');
+    s.setAttribute('src',jsname);
+    th.appendChild(s);
+}
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch (request.channel) {
