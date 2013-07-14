@@ -1,20 +1,20 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <title>Getting Started Extension's Popup</title>
     <style>
-      body {
-        min-width: 550px;
-        overflow-x: hidden;
-      }
+        body {
+            min-width: 550px;
+            overflow-x: hidden;
+        }
 
-      img {
-        margin: 5px;
-        border: 2px solid black;
-        vertical-align: middle;
-        width: 75px;
-        height: 75px;
-      }
+        img {
+            margin: 5px;
+            border: 2px solid black;
+            vertical-align: middle;
+            width: 75px;
+            height: 75px;
+        }
     </style>
 
     <!--
@@ -32,34 +32,54 @@
     <!-- Bootstrap -->
     <script src="/js/bootstrap.js"></script>
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen"/>
-  </head>
-  <body class="font10">
+</head>
+<body class="font10">
+
+<div id="content">
+    <div class="form-inline">
+        <label class="control-label">Project</label>
+        <select id="projectsList" class="span2">
+        </select>
+    </div>
+
+    <a href="http://jira.exadel.com" class="pull-right" title="Go to Exadel Jira in another tab">JIRA Exadel>></a>
 
 
-  <div class="form-inline">
-      <label class="control-label" for="inputWarning">Project</label>
-      <select id="projectsList" class="span2">
-      </select>
-  </div>
-  <a href="http://jira.exadel.com" class="pull-right" title="Go to Exadel Jira in another tab">JIRA Exadel>></a>
+    <div class="middle-cell margin10">
+        <div class="btn-group">
+            <button id="prevWeek" class="btn btn-primary">Prev Week</button>
+            <button id="currentWeek" class="btn btn-primary">Current Week</button>
+            <button id="nextWeek" class="btn btn-primary">Next Week</button>
+        </div>
+    </div>
+    <div class="" id="tableContent"></div>
+</div>
+
+<div id="credentials" class="credentials">
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="login">JIRA Login</label>
+
+            <div class="controls">
+                <input type="text" id="login" placeholder="Login">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="pass">JIRA Password</label>
+
+            <div class="controls">
+                <input type="password" id="pass" placeholder="Password">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button id="signIn" class="btn">Sign in</button>
+            </div>
+        </div>
+    </form>
+</div>
 
 
-  <div id="loading" class="progress progress-striped active">
-      <div class="bar" style="width: 100%;"></div>
-  </div>
-
-  <div class="middle-cell margin10">
-      <div class="btn-group">
-          <button id="prevWeek" class="btn btn-primary">Prev Week</button>
-          <button id="currentWeek" class="btn btn-primary">Current Week</button>
-          <button id="nextWeek" class="btn btn-primary">Next Week</button>
-      </div>
-  </div>
-
-
-  <div class="" id="tableContent"></div>
-
-
-
-  </body>
+</body>
 </html>
+

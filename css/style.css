@@ -11,6 +11,10 @@
     margin: 10px;
 }
 
+.credentials {
+    display: none;
+}
+
 th {
     text-align: center !important;
 }

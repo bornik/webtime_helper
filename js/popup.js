@@ -20,6 +20,9 @@ function currentWeek() {
 
 var mainObj = {
 
+    login: null,
+    pass: null,
+
     addDomHandlers: function () {
         var self = this;
         $('#fillWebtime').click(function (e) {
@@ -48,6 +51,19 @@ var mainObj = {
             plusWeek();
             self.requestAndShow();
         });
+
+        $('#signIn').click(function (e) {
+            self.login = $('#login').val();
+            self.pass = $('#pass').val();
+
+            self.requestAndShow();
+
+            self.login = null;
+            self.pass = null;
+            $('#credentials').hide();
+            $('#content').show();
+        });
+    },
 
         $('#projectsList').change(function (e) {
             console.log("#projectsList changed");
@@ -78,7 +94,7 @@ var mainObj = {
     },
 
     requestAndShow: function() {
-        var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
+        var response = getTimeSheet(this.login, this.pass, beginPeriod, endPeriod);
         if (response){
             processTableModel(response);
             drawAndFillTable(tableModel, tableCaptions);
@@ -86,25 +102,14 @@ var mainObj = {
     },
 
     actionButtonClicked: function () {
-        /*
-        $.ajax({
-            type: 'GET',
-            url: 'https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json',
-            success: function (response) {
-                processTableModel(response);
-                drawAndFillTable(tableModel, tableCaptions);
-            },
-            error: function (error) {
-                console.log('error',error);
-            }
-        });
-        */
-        minusWeek();
-        var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
-        if (response){
-            processTableModel(response);
-            drawAndFillTable(tableModel, tableCaptions);
+
+        if (isAuthorized()) {
+            this.requestAndShow();
+        } else {
+            $('#content').hide();
+            $('#credentials').show();
         }
+
     }
 
 };
@@ -132,57 +137,57 @@ function getAuthBase64(user, password) {
  * @return Weekly timesheet at JSON format.
  */
 function getTimeSheet(user, password, startDate, endDate) {
-	$("#loading").show();
-	var url = jiraUrl + "/rest/timesheet-gadget/1.0/raw-timesheet.json";
-	if (startDate != null && endDate != null) {
-    	var startParam = moment(startDate).format('DD/MMM/YYYY');
-		var endParam = moment(endDate).format('DD/MMM/YYYY'); 
-		var completion = "?startDate="+startParam+"&endDate="+endParam;
-		if (completion != null) {
-			url = url + completion;
-		}
-	}
-	console.log(url);
-	
-	var client = new XMLHttpRequest();
-	
-	client.open("GET", url, false);
-	client.setRequestHeader("Content-Type", "application/json");	
-    client.setRequestHeader("Authorization", getAuthBase64(user, password));			
-	
-	try {
-		client.send("");
-		if (client.status == 200){
-			console.log(client.responseText);
-			$("#loading").hide();
-			return client.responseText;
-		} else{
-			console.log("Error code: " + client.status);
-		}
-		//Error code: 204
-	} catch(e) {
-		console.log(e);
-	}
-	$("#loading").hide();
-	return null;
+
+    var url = jiraUrl + "/rest/timesheet-gadget/1.0/raw-timesheet.json";
+    if (startDate != null && endDate != null) {
+        var startParam = moment(startDate).format('DD/MMM/YYYY');
+        var endParam = moment(endDate).format('DD/MMM/YYYY'); 
+        var completion = "?startDate="+startParam+"&endDate="+endParam;
+        if (completion != null) {
+            url = url + completion;
+        }
+    }
+    console.log(url);
+    
+    var client = new XMLHttpRequest();
+    
+    client.open("GET", url, false);
+    client.setRequestHeader("Content-Type", "application/json");    
+    client.setRequestHeader("Authorization", getAuthBase64(user, password));            
+    
+    try {
+        client.send("");
+        if (client.status == 200){
+            console.log(client.responseText);
+            $("#loading").hide();
+            return client.responseText;
+        } else{
+            console.log("Error code: " + client.status);
+        }
+        //Error code: 204
+    } catch(e) {
+        console.log(e);
+    }
+
+    return null;
 }
 
 function isAuthorized() {
-	var result = false;
-	var url = jiraUrl + "/rest/auth/1/session";
-	var client = new XMLHttpRequest();
-	client.open("GET", url, false);
-	client.setRequestHeader("Content-Type", "application/json");
-	try {
-		client.send("");
-		if (client.status == 200){
-			result = true;
-		}
-	} catch(e){
-		console.log(e);	
-	}
-	console.log(result);
-	return result;
+    var result = false;
+    var url = jiraUrl + "/rest/auth/1/session";
+    var client = new XMLHttpRequest();
+    client.open("GET", url, false);
+    client.setRequestHeader("Content-Type", "application/json");
+    try {
+        client.send("");
+        if (client.status == 200){
+            result = true;
+        }
+    } catch(e){
+        console.log(e);    
+    }
+    console.log(result);
+    return result;
 }
 
 function goToIssue(issue){
