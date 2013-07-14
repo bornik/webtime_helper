@@ -190,7 +190,8 @@ function isAuthorized() {
 
 function goToIssue(issue){
 	var link = jiraUrl + "/browse/" + issue;
-	chrome.tabs.create({ url: link });
+	console.log(link);
+	chrome.tabs.create({ url: "https://jira.exadel.com/browse/PRBSTBDFPS-1" });
 }
 
 //document.addEventListener('DOMContentLoaded', function () {

@@ -12,7 +12,7 @@
   "permissions" : [
         "tabs",
       "https://webtime.exadel.com/",
-      "https://jira.exadel.com/",
+      "https://jira.exadel.com/**",
       "http://jira.exadel.com/"
   ],
 
