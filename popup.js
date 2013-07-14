@@ -2,6 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+var beginPeriod = moment().startOf('week');
+var endPeriod = moment().endOf('week'); 
+
+function plusWeek() {
+	beginPeriod = beginPeriod.add('days', 7);
+	endPeriod = endPeriod.add('days', 7);
+} 
+
+function minusWeek() {
+	beginPeriod = beginPeriod.add('days', 7);
+	endPeriod = endPeriod.add('days', 7);
+} 
+
+function currentWeek() {
+	beginPeriod = moment().startOf('week');
+	endPeriod = moment().endOf('week'); 
+} 
+
 var mainObj = {
 
     addDomHandlers: function () {
@@ -42,7 +60,8 @@ var mainObj = {
             }
         });
 		*/
-		var response = getTimeSheet("aartemenko", "kl4$Da", new Date("06.08.2013"), new Date("06.15.2013"));
+		
+		var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
 		if (response){
 			processTableModel(response);
 			drawAndFillTable(tableModel, tableCaptions);
