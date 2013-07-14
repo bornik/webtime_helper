@@ -6,18 +6,18 @@ var beginPeriod = moment().startOf('week');
 var endPeriod = moment().endOf('week'); 
 
 function plusWeek() {
-	beginPeriod = beginPeriod.add('days', 7);
-	endPeriod = endPeriod.add('days', 7);
+    beginPeriod = beginPeriod.add('days', 7);
+    endPeriod = endPeriod.add('days', 7);
 } 
 
 function minusWeek() {
-	beginPeriod = beginPeriod.add('days', -7);
-	endPeriod = endPeriod.add('days', -7);
+    beginPeriod = beginPeriod.add('days', -7);
+    endPeriod = endPeriod.add('days', -7);
 } 
 
 function currentWeek() {
-	beginPeriod = moment().startOf('week');
-	endPeriod = moment().endOf('week'); 
+    beginPeriod = moment().startOf('week');
+    endPeriod = moment().endOf('week'); 
 } 
 
 var mainObj = {
@@ -48,7 +48,7 @@ var mainObj = {
 
     actionButtonClicked: function () {
         /*
-		$.ajax({
+        $.ajax({
             type: 'GET',
             url: 'https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json',
             success: function (response) {
@@ -59,13 +59,13 @@ var mainObj = {
                 console.log('error',error);
             }
         });
-		*/
-		minusWeek();
-		var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
-		if (response){
-			processTableModel(response);
-			drawAndFillTable(tableModel, tableCaptions);
-		}
+        */
+        minusWeek();
+        var response = getTimeSheet("aartemenko", "kl4$Da", beginPeriod, endPeriod);
+        if (response){
+            processTableModel(response);
+            drawAndFillTable(tableModel, tableCaptions);
+        }
     }
 
 };
@@ -78,9 +78,9 @@ var mainObj = {
  * @return Base64 auth string.
  */
 function getAuthBase64(user, password) {
-	var tok = user + ':' + password;
-	var hash = btoa(tok);
-	return "Basic " + hash;
+    var tok = user + ':' + password;
+    var hash = btoa(tok);
+    return "Basic " + hash;
 } 
 
 /**
@@ -93,37 +93,37 @@ function getAuthBase64(user, password) {
  * @return Weekly timesheet at JSON format.
  */
 function getTimeSheet(user, password, startDate, endDate) {
-	$("#loading").show();
-	var url = "https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json";
-	if (startDate != null && endDate != null) {
-    	var startParam = moment(startDate).format('DD/MMM/YYYY');
-		var endParam = moment(endDate).format('DD/MMM/YYYY'); 
-		var completion = "?startDate="+startParam+"&endDate="+endParam;
-		if (completion != null) {
-			url = url + completion;
-		}
-	}
-	console.log(url);
-	
-	var client = new XMLHttpRequest();
-	
-	client.open("GET", url, false);
-	client.setRequestHeader("Content-Type", "application/json");	
-	client.setRequestHeader("Authorization", "Basic " + getAuthBase64(user, password));		
-	try {
-		client.send("");
-		if (client.status == 200){
-			console.log(client.responseText);
-			$("#loading").hide();
-			return client.responseText;
-		} else{
-			console.log("Error code: " + client.status);
-		}
-	} catch(e) {
-		console.log(e);
-	}
-	$("#loading").hide();
-	return null;
+    $("#loading").show();
+    var url = "https://jira.exadel.com/rest/timesheet-gadget/1.0/raw-timesheet.json";
+    if (startDate != null && endDate != null) {
+        var startParam = moment(startDate).format('DD/MMM/YYYY');
+        var endParam = moment(endDate).format('DD/MMM/YYYY'); 
+        var completion = "?startDate="+startParam+"&endDate="+endParam;
+        if (completion != null) {
+            url = url + completion;
+        }
+    }
+    console.log(url);
+    
+    var client = new XMLHttpRequest();
+    
+    client.open("GET", url, false);
+    client.setRequestHeader("Content-Type", "application/json");    
+    client.setRequestHeader("Authorization", "Basic " + getAuthBase64(user, password));        
+    try {
+        client.send("");
+        if (client.status == 200){
+            console.log(client.responseText);
+            $("#loading").hide();
+            return client.responseText;
+        } else{
+            console.log("Error code: " + client.status);
+        }
+    } catch(e) {
+        console.log(e);
+    }
+    $("#loading").hide();
+    return null;
 }
 
 // Run our kitten generation script as soon as the document's DOM is ready.
