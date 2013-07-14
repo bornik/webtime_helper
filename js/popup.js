@@ -78,6 +78,10 @@ var mainObj = {
             console.log("#projectsList changed");
             localStorage['currentProject'] = e.target.value;
         });
+
+        $('#tableContent').delegate("td.issueLink", "click", function() {
+            goToIssue($(this).attr('data-key'));
+        });
     },
 
     setProjectsOptions: function() {

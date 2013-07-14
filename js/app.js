@@ -87,8 +87,7 @@ function processTableModel(data) {
 
         for (var innerKey in data.worklog[key].entries) {
             var logDate = new Date(+data.worklog[key].entries[innerKey].startDate),
-                timeSpent = data.worklog[key].entries[innerKey].timeSpent / 3600, // time in hours
-                comment = data.worklog[key].entries[innerKey].comment;
+                timeSpent = data.worklog[key].entries[innerKey].timeSpent/3600; // time in hours
 
             var item = {};
             item.key = logDate.getDay();
@@ -157,11 +156,11 @@ function drawAndFillTable(tm, tc) {
         var rowspan = tm[key].length;
 
         $.each(tm[key], function(i) {
-            var dataRow = $('<tr/>')
+            var dataRow = $('<tr/>');
             if (i === 0) {
-                var row = $('<td rowspan="' + rowspan + '" class="middle-cell">' + dow + '</td><td>' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td><td rowspan="' + rowspan + '" class="middle-cell"><input type="checkbox" name="sel" value="' + dayIndex + '" checked/></td>');
+                var row = $('<td rowspan="' + rowspan + '" class="middle-cell">' + dow + '</td><td class="issueLink" data-key="'+this.issueKey+'">' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td><td rowspan="' + rowspan + '" class="middle-cell"><input type="checkbox" name="sel" value="' + dayIndex + '" checked/></td>');
             } else {
-                var row = $('<td>' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td>');
+                var row = $('<td class="issueLink" data-key="'+this.issueKey+'">' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td>');
             }
             dataRow.append(row);
             tableBody.append(dataRow);
