@@ -138,7 +138,7 @@ function isAuthorized() {
 	client.setRequestHeader("Content-Type", "application/json");
 	try {
 		client.send("");
-		if (client.status != 200){
+		if (client.status == 200){
 			result = true;
 		}
 	} catch(e){
