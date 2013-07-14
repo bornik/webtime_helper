@@ -73,6 +73,7 @@ function processTableModel(data) {
     weekHeader.init();
 
     var tmpItems = [];
+    var totalHours = 0;
 
     for (var key in data.worklog) {
 
@@ -91,6 +92,8 @@ function processTableModel(data) {
             item.issueName = issueName;
             item.timeSpent = timeSpent;
 
+            totalHours += timeSpent;
+
             tmpItems.push(item);
         }
     }
@@ -107,6 +110,8 @@ function processTableModel(data) {
 
         tableModel[tmpItems[index].key].push(modelItem);
     });
+
+    tableModel.totalHours = totalHours;
 
 }
 
@@ -146,9 +151,9 @@ function drawAndFillTable(tm, tc) {
         $.each(tm[key], function(i) {
             var dataRow = $('<tr/>')
             if (i === 0) {
-                var row = $('<td rowspan="' + rowspan + '" class="middle-cell">' + dow + '</td><td>' + this.issueKey + ' - ' + this.issueName + '</td><td>' + this.timeSpent + ' h </td><td rowspan="' + rowspan + '" class="middle-cell"><input type="checkbox" name="sel" value="' + dayIndex + '" checked/></td>');
+                var row = $('<td rowspan="' + rowspan + '" class="middle-cell">' + dow + '</td><td>' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td><td rowspan="' + rowspan + '" class="middle-cell"><input type="checkbox" name="sel" value="' + dayIndex + '" checked/></td>');
             } else {
-                var row = $('<td>' + this.issueKey + ' - ' + this.issueName + '</td><td>' + this.timeSpent + ' h </td>');
+                var row = $('<td>' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td>');
             }
             dataRow.append(row);
             tableBody.append(dataRow);
@@ -157,7 +162,7 @@ function drawAndFillTable(tm, tc) {
 
     table.append(tableBody);
 
-    var tableFooter = $('<tfoot/>').append('<td><a href="http://jira.exadel.com" class="btn btn-primary btn-small">JIRA Exadel</a> </td><td></td><td class="summary">' + timeSpentSummary + ' h</td><td><button id="fillWebtime" class="btn btn-success btn-small">Fill table</button></td>');
+    var tableFooter = $('<tfoot/>').append('<td><a href="http://jira.exadel.com" class="btn btn-link">JIRA Exadel</a></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td><button id="fillWebtime" class="btn btn-success btn-small">Fill table</button></td>');
     table.append(tableFooter);
 
 
@@ -175,7 +180,11 @@ function drawAndFillTable(tm, tc) {
 }
 
 
-
+/**
+ * deletes unchecked days from model
+ * @param tm - table model
+ * @returns {{new table model without unchecked days}}
+ */
 function prepareModelToSend(tm) {
     var modelToSend = {};
     var checkedDays = $("input[name='sel']:checked");
@@ -183,6 +192,7 @@ function prepareModelToSend(tm) {
     $.each(checkedDays, function() {
         modelToSend[$(this).val()] =  tm[$(this).val()];
     });
+
     return modelToSend;
 }
 

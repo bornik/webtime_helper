@@ -3,6 +3,10 @@
     text-align: center !important;
 }
 
+.bold-cell {
+    font-weight: bold;
+}
+
 th {
     text-align: center !important;
 }
