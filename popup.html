@@ -30,17 +30,26 @@
     <link href="/css/style.css" rel="stylesheet"/>
 
     <!-- Bootstrap -->
-    <script src="/js/bootstrap.min.js"></script>
-    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
+    <script src="/js/bootstrap.js"></script>
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen"/>
   </head>
-  <body>
+  <body class="font10">
+
+
+  <div class="form-inline">
+      <label class="control-label" for="inputWarning">Project</label>
+      <select class="span2">
+          <option value="-1">Select contract from list</option>
+      </select>
+  </div>
+  <a href="http://jira.exadel.com" class="pull-right" title="Go to Exadel Jira in another tab">JIRA Exadel>></a>
 
 
   <div id="loading" class="progress progress-striped active">
       <div class="bar" style="width: 100%;"></div>
   </div>
 
-  <div id="tableContent"></div>
+  <div class="" id="tableContent"></div>
 
 
   </body>

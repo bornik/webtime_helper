@@ -126,7 +126,7 @@ function drawAndFillTable(tm, tc) {
 
     var timeSpentSummary = 0;
 
-    var table = $('<table/>').addClass('table table-hover table-condensed').attr('id', 'jiraLog');
+    var table = $('<table/>').addClass('table no-margin-bottom table-hover table-condensed').attr('id', 'jiraLog');
 
     var tableCaption = $('<caption/>').append(weekHeader.getCaption());
 
@@ -164,7 +164,7 @@ function drawAndFillTable(tm, tc) {
 
     table.append(tableBody);
 
-    var tableFooter = $('<tfoot/>').append('<td><a href="http://jira.exadel.com" class="btn btn-link">JIRA Exadel</a></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td><button id="fillWebtime" class="btn btn-success btn-small">Fill table</button></td>');
+    var tableFooter = $('<tfoot/>').append('<td><button id="fillWebtime" class="btn btn-success btn-small">Fill table</button></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td></td>');
     table.append(tableFooter);
 
 

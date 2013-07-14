@@ -12,5 +12,14 @@ th {
 }
 
 body {
-    font-size: 10px !important;
+    padding: 5px;
+}
+
+body.font10 * {
+    line-height: 12px;
+    font-size: 11px;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0;
 }
