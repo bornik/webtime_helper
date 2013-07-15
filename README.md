@@ -1,3 +1,3 @@
 webtime_helper
 ==============
-Google chrome extension witch helps to fill webtime weekly reports based on jira work log. It'll be usefull for Exadel stuff.
+Google chrome extension which helps to fill WebTime weekly reports based on JIRA work log. It'll be useful for Exadel staff.
