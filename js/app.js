@@ -6,37 +6,33 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var tableModel = {};
+function getShortNameOfDay (dayIndex) {
+    'use strict';
 
-var weekHeader = {
-    startDate: '',
-    endDate: '',
-    startDayOfWeek: '',
-    startDay: '',
-    startMonth: '',
-    startYear: '',
+    switch (+dayIndex) {
+        case 0:
+            return 'Sun';
+        case 1:
+            return 'Mon';
+        case 2:
+            return 'Tue';
+        case 3:
+            return 'Wed';
+        case 4:
+            return 'Thu';
+        case 5:
+            return 'Fri';
+        case 6:
+            return 'Sat';
+        default :
+            return 'Unk';
+    }
+}
 
-    endDayOfWeek: '',
-    endDay: '',
-    endMonth: '',
-    endYear: '',
+function TableModel (data) {
+    "use strict";
 
-    init: function () {
-        'use strict';
-        this.startDayOfWeek = this.startDate.getDay();
-        this.startDay = this.startDate.getDate();
-        this.startMonth = this.startDate.getMonth();
-        this.startYear = this.startDate.getFullYear();
-
-        this.endDayOfWeek = this.endDate.getDay();
-        this.endDay = this.endDate.getDate();
-        this.endMonth = this.endDate.getMonth();
-        this.endYear = this.endDate.getFullYear();
-    },
-
-
-    getShortNameOfMonth: function (monthIndex) {
-        'use strict';
+    this._getShortNameOfMonth = function (monthIndex) {
         switch (+monthIndex) {
             case 0:
                 return 'Jan';
@@ -65,89 +61,98 @@ var weekHeader = {
             default :
                 return 'Unk';
         }
-    },
+    };
 
-    getCaption: function () {
+    this._datesInit = function () {
+        this.startDayOfWeek = this.startDate.getDay();
+        this.startDay = this.startDate.getDate();
+        this.startMonth = this.startDate.getMonth();
+        this.startYear = this.startDate.getFullYear();
+
+        this.endDayOfWeek = this.endDate.getDay();
+        this.endDay = this.endDate.getDate();
+        this.endMonth = this.endDate.getMonth();
+        this.endYear = this.endDate.getFullYear();
+    };
+
+    this.getCaption = function () {
         return getShortNameOfDay(this.startDayOfWeek) +
-            ', ' + this.startDay + ' ' + this.getShortNameOfMonth(this.startMonth) + ' ' + this.startYear +
-            ' - ' + getShortNameOfDay(this.endDayOfWeek) + ', ' + this.endDay + ' ' + this.getShortNameOfMonth(this.endMonth) +
+            ', ' + this.startDay + ' ' + this._getShortNameOfMonth(this.startMonth) + ' ' + this.startYear +
+            ' - ' + getShortNameOfDay(this.endDayOfWeek) + ', ' + this.endDay + ' ' + this._getShortNameOfMonth(this.endMonth) +
             ' ' + this.endYear;
-    }
-};
+    };
 
-// Delete this var
-var tableCaptions = ['DoW', 'Issue', 'Time log', 'Select'];
+    this.init = function () {
+        data = JSON.parse(data);
 
-/**
- * Builds a table model with Issues from JIRA
- * @param data table model
- */
-function processTableModel (data) {
+        if (!(data && data.worklog)) {
+            return;
+        }
 
-    data = JSON.parse(data);
+        this.startDate = new Date(+data.startDate);
+        this.endDate = new Date(+data.endDate);
 
-    if (!(data && data.worklog)) {
-        return;
-    }
+        this._datesInit();
 
-    tableModel = {};
+        var tmpItems = [],
+            totalHours = 0,
+            key, issueKey, issueName, innerKey,
+            logDate, timeSpent, item,
+            workLog = data.worklog,
+            workLogEntries;
 
-    weekHeader.startDate = new Date(+data.startDate);
-    weekHeader.endDate = new Date(+data.endDate);
+        for (key in workLog) {
+            if (workLog.hasOwnProperty(key)) {
+                issueKey = workLog[key].key;
+                issueName = workLog[key].summary;
+                workLogEntries = workLog[key].entries;
 
-    weekHeader.init();
+                for (innerKey in workLogEntries) {
+                    if (workLogEntries.hasOwnProperty(innerKey)) {
+                        logDate = new Date(+workLogEntries[innerKey].startDate);
+                        timeSpent = workLogEntries[innerKey].timeSpent / 3600; // time in hours
 
-    var tmpItems = [],
-        totalHours = 0,
-        key, issueKey, issueName, innerKey,
-        logDate, timeSpent, item,
-        workLog = data.worklog,
-        workLogEntries;
+                        item = {};
+                        item.key = logDate.getDay();
+                        item.issueKey = issueKey;
+                        item.issueName = issueName;
+                        item.timeSpent = timeSpent;
 
+                        totalHours += timeSpent;
 
-    for (key in workLog) {
-        if (workLog.hasOwnProperty(key)) {
-            issueKey = workLog[key].key;
-            issueName = workLog[key].summary;
-            workLogEntries = workLog[key].entries;
-
-            for (innerKey in workLogEntries) {
-                if (workLogEntries.hasOwnProperty(innerKey)) {
-                    logDate = new Date(+workLogEntries[innerKey].startDate);
-                    timeSpent = workLogEntries[innerKey].timeSpent / 3600; // time in hours
-
-                    item = {};
-                    item.key = logDate.getDay();
-                    item.issueKey = issueKey;
-                    item.issueName = issueName;
-                    item.timeSpent = timeSpent;
-
-                    totalHours += timeSpent;
-
-                    tmpItems.push(item);
+                        tmpItems.push(item);
+                    }
                 }
             }
         }
+
+        var modelItem,
+            self = this;
+
+        $.each(tmpItems, function (index) {
+            modelItem = {};
+            modelItem.issueKey = tmpItems[index].issueKey;
+            modelItem.issueName = tmpItems[index].issueName;
+            modelItem.timeSpent = tmpItems[index].timeSpent;
+
+            if (!self.days) {
+                self.days = {};
+            }
+
+            if (typeof self.days[tmpItems[index].key] !== 'object') {
+                self.days[tmpItems[index].key] = [];
+            }
+
+            self.days[tmpItems[index].key].push(modelItem);
+        });
+
+        this.totalHours = totalHours;
     }
-
-    var modelItem;
-
-    $.each(tmpItems, function (index) {
-        modelItem = {};
-        modelItem.issueKey = tmpItems[index].issueKey;
-        modelItem.issueName = tmpItems[index].issueName;
-        modelItem.timeSpent = tmpItems[index].timeSpent;
-
-        if (typeof tableModel[tmpItems[index].key] !== 'object') {
-            tableModel[tmpItems[index].key] = [];
-        }
-
-        tableModel[tmpItems[index].key].push(modelItem);
-    });
-
-    tableModel.totalHours = totalHours;
-
 }
+
+
+// Delete this var
+var tableCaptions = ['DoW', 'Issue', 'Time log', 'Select'];
 
 /**
  * draws and fills table with data from model
@@ -155,21 +160,27 @@ function processTableModel (data) {
  * @param tc - array of table captions
  */
 function drawAndFillTable (tm, tc) {
+    'use strict';
 
-    var tableContent = $('#tableContent');
+    var tableContent = $('#tableContent'),
+        table,
+        tableCaption,
+        tableHeader,
+        tableHeaderRow,
+        tableFooter;
 
     if (document.getElementById('jiraLog')) {
         tableContent.empty();
     }
 
-    var table = $('<table/>').addClass('table no-margin-bottom table-hover table-condensed').attr('id', 'jiraLog');
+    table = $('<table/>').addClass('table no-margin-bottom table-hover table-condensed').attr('id', 'jiraLog');
 
-    var tableCaption = $('<caption/>').append(weekHeader.getCaption());
+    tableCaption = $('<caption/>').append(tm.getCaption());
 
     table.append(tableCaption);
 
-    var tableHeader = $('<thead/>'),
-        tableHeaderRow = $('<tr/>');
+    tableHeader = $('<thead/>');
+    tableHeaderRow = $('<tr/>');
 
     $.each(tc, function (i) {
         tableHeaderRow.append('<th>' + tc[i] + '</th>');
@@ -184,16 +195,17 @@ function drawAndFillTable (tm, tc) {
         dow,
         rowSpan,
         row,
-        dataRow;
+        dataRow,
+        days = tm.days;
 
     // Fill table with data
-    for (key in tm) {
-        if (tm.hasOwnProperty(key)) {
+    for (key in days) {
+        if (days.hasOwnProperty(key)) {
             dayIndex = key;
             dow = getShortNameOfDay(dayIndex);
-            rowSpan = tm[key].length;
+            rowSpan = days[key].length;
 
-            $.each(tm[key], function (i) {
+            $.each(days[key], function (i) {
                 dataRow = $('<tr/>');
                 if (i === 0) {
                     row = $('<td rowspan="' + rowSpan + '" class="middle-cell">' + dow + '</td><td class="issueLink" data-key="' + this.issueKey + '">' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td><td rowspan="' + rowSpan + '" class="middle-cell"><input type="checkbox" name="sel" value="' + dayIndex + '" checked/></td>');
@@ -208,7 +220,7 @@ function drawAndFillTable (tm, tc) {
 
     table.append(tableBody);
 
-    var tableFooter = $('<tfoot/>').append('<td></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td></td>');
+    tableFooter = $('<tfoot/>').append('<td></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td></td>');
     table.append(tableFooter);
 
 
@@ -222,34 +234,16 @@ function drawAndFillTable (tm, tc) {
  * @returns {{new table model without unchecked days}}
  */
 function prepareModelToSend (tm) {
+    'use strict';
+
     var modelToSend = {};
     var checkedDays = $("input[name='sel']:checked");
 
     $.each(checkedDays, function () {
-        modelToSend[$(this).val()] = tm[$(this).val()];
+        modelToSend[$(this).val()] = tm.days[$(this).val()];
     });
 
     return modelToSend;
 }
 
-function getShortNameOfDay (dayIndex) {
-    switch (+dayIndex) {
-        case 0:
-            return 'Sun';
-        case 1:
-            return 'Mon';
-        case 2:
-            return 'Tue';
-        case 3:
-            return 'Wed';
-        case 4:
-            return 'Thu';
-        case 5:
-            return 'Fri';
-        case 6:
-            return 'Sat';
-        default :
-            return 'Unk';
-    }
-}
 
