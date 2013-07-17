@@ -1,22 +1,24 @@
-
 var beginPeriod = moment().startOf('week');
-var endPeriod = moment().endOf('week'); 
-var jiraUrl = "https://jira.exadel.com"; 
+var endPeriod = moment().endOf('week');
+var jiraUrl = "https://jira.exadel.com";
 
-function plusWeek() {
+function plusWeek () {
+    "use strict";
     beginPeriod = beginPeriod.add('days', 7);
     endPeriod = endPeriod.add('days', 7);
-} 
+}
 
-function minusWeek() {
+function minusWeek () {
+    "use strict";
     beginPeriod = beginPeriod.add('days', -7);
     endPeriod = endPeriod.add('days', -7);
-} 
+}
 
-function currentWeek() {
+function currentWeek () {
+    "use strict";
     beginPeriod = moment().startOf('week');
-    endPeriod = moment().endOf('week'); 
-} 
+    endPeriod = moment().endOf('week');
+}
 
 var mainObj = {
 
@@ -24,11 +26,12 @@ var mainObj = {
     pass: null,
 
     addDomHandlers: function () {
+        "use strict";
         var self = this;
         $('#fillWebtime').click(function (e) {
             console.log("#fillWebtime clicked");
-
-            var dataModel = prepareModelToSend(tableModel);
+            debugger;
+            var dataModel = prepareModelToSend(self.tableModel);
 
             chrome.tabs.getSelected(null, function (tab) {
                 chrome.tabs.sendMessage(tab.id, {
@@ -44,11 +47,11 @@ var mainObj = {
         });
 
         $('#prevWeek').click(function (e) {
-           minusWeek();
+            minusWeek();
             self.requestAndShow();
         });
 
-        $('#currentWeek').click(function(e) {
+        $('#currentWeek').click(function (e) {
             currentWeek();
             self.requestAndShow();
         });
@@ -57,8 +60,8 @@ var mainObj = {
             plusWeek();
             self.requestAndShow();
         });
-		
-		$('#jiraLink').click(function (e) {
+
+        $('#jiraLink').click(function (e) {
             goToJira();
         });
 
@@ -76,29 +79,29 @@ var mainObj = {
 
         $('#projectsList').change(function (e) {
             console.log("#projectsList changed");
-            localStorage['currentProject'] = e.target.value;
+            localStorage.currentProject = e.target.value;
         });
 
-        $('#tableContent').delegate("td.issueLink", "click", function() {
+        $('#tableContent').delegate("td.issueLink", "click", function () {
             goToIssue($(this).attr('data-key'));
         });
     },
 
-    setProjectsOptions: function() {
+    setProjectsOptions: function () {
         console.log("setProjectsOptions fired");
         chrome.tabs.getSelected(null, function (tab) {
             console.log("getSelected fired");
             chrome.tabs.sendMessage(tab.id, {channel: 'getProjects'}, function (response) {
                 console.log("getProjects response fired", response);
-                if (response.status === 'success'){
+                if (response.status === 'success') {
                     var $projectsList = $('#projectsList');
-                    $.each(response.data, function(index, project){
+                    $.each(response.data, function (index, project) {
                         var o = new Option(project.text, project.value);
                         $(o).html(project.text);
                         $projectsList.append(o);
                     });
-                    if (localStorage['currentProject']) {
-                        $projectsList.val(localStorage['currentProject'])
+                    if (localStorage.currentProject) {
+                        $projectsList.val(localStorage.currentProject)
                     } else {
                         $projectsList.val(-1);
                     }
@@ -107,16 +110,19 @@ var mainObj = {
         });
     },
 
-    requestAndShow: function() {
+    requestAndShow: function () {
+        "use strict";
         var response = getTimeSheet(this.login, this.pass, beginPeriod, endPeriod);
-        if (response){
-            processTableModel(response);
-            drawAndFillTable(tableModel, tableCaptions);
+        if (response) {
+            this.tableModel = new TableModel(response);
+            this.tableModel.init();
+            //processTableModel(response);
+            drawAndFillTable(this.tableModel, tableCaptions);
         }
     },
 
     actionButtonClicked: function () {
-
+        "use strict";
         if (isAuthorized()) {
             this.requestAndShow();
         } else {
@@ -135,11 +141,12 @@ var mainObj = {
  * @password The user password.
  * @return Base64 auth string.
  */
-function getAuthBase64(user, password) {
+function getAuthBase64 (user, password) {
+    "use strict";
     var tok = user + ':' + password;
     var hash = btoa(tok);
     return "Basic " + hash;
-} 
+}
 
 /**
  * Provide jira weekly timesheet.
@@ -150,43 +157,44 @@ function getAuthBase64(user, password) {
  * @endDate End report period.
  * @return Weekly timesheet at JSON format.
  */
-function getTimeSheet(user, password, startDate, endDate) {
-
+function getTimeSheet (user, password, startDate, endDate) {
+    "use strict";
     var url = jiraUrl + "/rest/timesheet-gadget/1.0/raw-timesheet.json";
     if (startDate != null && endDate != null) {
         var startParam = moment(startDate).format('DD/MMM/YYYY');
-        var endParam = moment(endDate).format('DD/MMM/YYYY'); 
-        var completion = "?startDate="+startParam+"&endDate="+endParam;
+        var endParam = moment(endDate).format('DD/MMM/YYYY');
+        var completion = "?startDate=" + startParam + "&endDate=" + endParam;
         if (completion != null) {
             url = url + completion;
         }
     }
     console.log(url);
-    
+
     var client = new XMLHttpRequest();
-    
+
     client.open("GET", url, false);
-    client.setRequestHeader("Content-Type", "application/json");    
-    client.setRequestHeader("Authorization", getAuthBase64(user, password));            
-    
+    client.setRequestHeader("Content-Type", "application/json");
+    client.setRequestHeader("Authorization", getAuthBase64(user, password));
+
     try {
         client.send("");
-        if (client.status == 200){
+        if (client.status == 200) {
             console.log(client.responseText);
             $("#loading").hide();
             return client.responseText;
-        } else{
+        } else {
             console.log("Error code: " + client.status);
         }
         //Error code: 204
-    } catch(e) {
+    } catch (e) {
         console.log(e);
     }
 
     return null;
 }
 
-function isAuthorized() {
+function isAuthorized () {
+    "use strict";
     var result = false;
     var url = jiraUrl + "/rest/auth/1/session";
     var client = new XMLHttpRequest();
@@ -194,24 +202,25 @@ function isAuthorized() {
     client.setRequestHeader("Content-Type", "application/json");
     try {
         client.send("");
-        if (client.status == 200){
+        if (client.status == 200) {
             result = true;
         }
-    } catch(e){
-        console.log(e);    
+    } catch (e) {
+        console.log(e);
     }
     console.log(result);
     return result;
 }
 
-function goToIssue(issue){
-	var link = jiraUrl + "/browse/" + issue;
-	console.log(link);
-	chrome.tabs.create({ url: link });
+function goToIssue (issue) {
+    "use strict";
+    var link = jiraUrl + "/browse/" + issue;
+    console.log(link);
+    chrome.tabs.create({ url: link });
 }
 
-function goToJira(){
-	chrome.tabs.create({ url: jiraUrl });
+function goToJira () {
+    chrome.tabs.create({ url: jiraUrl });
 }
 
 //document.addEventListener('DOMContentLoaded', function () {
@@ -219,6 +228,7 @@ function goToJira(){
 //    mainObj.actionButtonClicked();
 //});
 $(document).ready(function () {
+    "use strict";
     mainObj.addDomHandlers();
     mainObj.actionButtonClicked();
     mainObj.setProjectsOptions();
