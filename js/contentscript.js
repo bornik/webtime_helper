@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2010 The Chromium Authors. All rights reserved.  Use of this
- * source code is governed by a BSD-style license that can be found in the
- * LICENSE file.
- */
-
-
 //TODO if jquery is not exist load it with chrome.tabs.executeScript(null, {file: "content_script.js"});
 //chrome.browserAction.onClicked.addListener(function(tab) {
 //    chrome.tabs.executeScript(null, {file: "content_script.js"});
@@ -46,7 +39,6 @@ var tableFiller = {
     },
 
     setProject: function (index, id){
-//        checkPID(index,id);
         var $temp = $('#' + this.idsMask.project + index).val(id);
         $.get(chrome.extension.getURL('setProject.js'),
             function(data) {
@@ -57,20 +49,8 @@ var tableFiller = {
                 document.getElementsByTagName("body")[0].setAttribute("onLoad", "injected_main();");
             }
         );
-//        addJavascript(chrome.extension.getURL("/setProject.js"),'body');
-//        $('#' + this.idsMask.project + index).change();
-//        $temp
     }
 };
-
-
-function addJavascript(jsname,pos) {
-    var th = document.getElementsByTagName(pos)[0];
-    var s = document.createElement('script');
-    s.setAttribute('type','text/javascript');
-    s.setAttribute('src',jsname);
-    th.appendChild(s);
-}
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch (request.channel) {
