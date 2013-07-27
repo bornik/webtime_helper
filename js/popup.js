@@ -85,6 +85,14 @@ var mainObj = {
         $('#tableContent').delegate("td.issueLink", "click", function () {
             goToIssue($(this).attr('data-key'));
         });
+
+        $("#tableContent").delegate("td > input.daycheck", "click", function() {
+            if ($(this).is(":checked")) {
+                $(this).parents('tr').addClass('success');
+            } else {
+                $(this).parents('tr').removeClass('success');
+            }
+        });
     },
 
     setProjectsOptions: function () {
@@ -129,9 +137,7 @@ var mainObj = {
             $('#content').hide();
             $('#credentials').show();
         }
-
     }
-
 };
 
 /**

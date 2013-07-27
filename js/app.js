@@ -5,9 +5,9 @@
  * Time: 1:41 PM
  * To change this template use File | Settings | File Templates.
  */
+"use strict";
 
 function getShortNameOfDay (dayIndex) {
-    'use strict';
     var result = 'Unk';
     dayIndex = +dayIndex;
     if (dayIndex >= 0 && dayIndex <= 6) {
@@ -19,8 +19,6 @@ function getShortNameOfDay (dayIndex) {
 }
 
 function TableModel (data) {
-    "use strict";
-
     this._getShortNameOfMonth = function (monthIndex) {
         var result = 'Unk';
         monthIndex = +monthIndex;
@@ -129,8 +127,6 @@ var tableCaptions = ['DoW', 'Issue', 'Time log', 'Select'];
  * @param tc - array of table captions
  */
 function drawAndFillTable (tm, tc) {
-    'use strict';
-
     var tableContent = $('#tableContent'),
         table,
         tableCaption,
@@ -177,7 +173,8 @@ function drawAndFillTable (tm, tc) {
             $.each(days[key], function (i) {
                 dataRow = $('<tr/>');
                 if (i === 0) {
-                    row = $('<td rowspan="' + rowSpan + '" class="middle-cell">' + dow + '</td><td class="issueLink" data-key="' + this.issueKey + '">' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td><td rowspan="' + rowSpan + '" class="middle-cell"><input type="checkbox" name="sel" value="' + dayIndex + '" checked/></td>');
+                    dataRow.addClass('success');
+                    row = $('<td rowspan="' + rowSpan + '" class="middle-cell">' + dow + '</td><td class="issueLink" data-key="' + this.issueKey + '">' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td><td rowspan="' + rowSpan + '" class="middle-cell"><input type="checkbox" class="daycheck" name="sel" value="' + dayIndex + '" checked/></td>');
                 } else {
                     row = $('<td class="issueLink" data-key="' + this.issueKey + '">' + this.issueKey + ' - ' + this.issueName + '</td><td class="middle-cell">' + this.timeSpent + ' h</td>');
                 }
@@ -192,7 +189,6 @@ function drawAndFillTable (tm, tc) {
     tableFooter = $('<tfoot/>').append('<td></td><td></td><td class="bold-cell middle-cell">' + tm.totalHours + ' h</td><td></td>');
     table.append(tableFooter);
 
-
     tableContent.append(table);
 }
 
@@ -203,8 +199,6 @@ function drawAndFillTable (tm, tc) {
  * @returns {{new table model without unchecked days}}
  */
 function prepareModelToSend (tm) {
-    'use strict';
-
     var modelToSend = {};
     var checkedDays = $("input[name='sel']:checked");
 
